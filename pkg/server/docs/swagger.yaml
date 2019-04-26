@@ -1,0 +1,226 @@
+basePath: /api/v1
+definitions:
+  model.CreateIncidentResponse:
+    type: object
+  model.CreateLinksRequest:
+    properties:
+      incidents:
+        $ref: '#/definitions/model.IncidentLink'
+        type: object
+      infra:
+        $ref: '#/definitions/model.InfraLink'
+        type: object
+    type: object
+  model.CreateLinksResponse:
+    type: object
+  model.IncidentLink:
+    properties:
+      acted_in:
+        example:
+        - suhas
+        items:
+          type: string
+        type: array
+      caused_by:
+        example:
+        - envoy
+        items:
+          type: string
+        type: array
+      name:
+        example: ir-foo
+        type: string
+    type: object
+  model.InfraCommunitiesResponse:
+    properties:
+      communities:
+        items:
+          type: '&{%!s(token.Pos=1217) <nil> %!s(*ast.SelectorExpr=&{0xc0002ec360
+            0xc0002ec380})}'
+        type: array
+    type: object
+  model.InfraHotSpotsResponse:
+    properties:
+      hotspots:
+        type: string
+    type: object
+  model.InfraLink:
+    properties:
+      depends_on:
+        example:
+        - envoy
+        items:
+          type: string
+        type: array
+      name:
+        example: term-health-srv
+        type: string
+    type: object
+  model.RelatedIncidentsResponse:
+    properties:
+      incidents:
+        type: string
+    type: object
+  model.SharedInfraResponse:
+    properties:
+      paths:
+        items:
+          type: '&{%!s(token.Pos=1295) <nil> string}'
+        type: array
+    type: object
+  model.UpsertIncidentRequest:
+    properties:
+      active:
+        example: true
+        type: boolean
+      name:
+        example: ir-foo
+        type: string
+    required:
+    - name
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: devshorts
+  description: Graph Query.
+  license: {}
+  title: SampleQL
+  version: "1.0"
+paths:
+  /incidents:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Incident
+        in: body
+        name: incident
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpsertIncidentRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CreateIncidentResponse'
+            type: object
+      summary: Creates an incident
+      tags:
+      - incidents
+  /incidents/{id}/related:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Incident Name
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RelatedIncidentsResponse'
+            type: object
+      summary: Related Incidents
+      tags:
+      - incidents
+  /incidents/{id}/shared/{shared_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Incident Name
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Related Incident Name
+        in: path
+        name: shared_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SharedInfraResponse'
+            type: object
+      summary: Shared Infra Between Incidents
+      tags:
+      - incidents
+  /infra/communities:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.InfraCommunitiesResponse'
+            type: object
+      summary: Infra that is likley to be grouped together. These are related communities
+      tags:
+      - infra
+  /infra/hotspots:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.InfraHotSpotsResponse'
+            type: object
+      summary: Infra that has a high level of betweenness. I.e. Infra that is used
+        everywhere
+      tags:
+      - infra
+  /links:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create Links
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateLinksRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CreateLinksResponse'
+            type: object
+      summary: Creates links
+      tags:
+      - links
+  /ping:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      summary: Ping
+      tags:
+      - diagnostics
+swagger: "2.0"

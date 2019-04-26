@@ -1,0 +1,20 @@
+version: '3'
+services:
+  neo4j:
+    image: neo4j
+    ports:
+      - "7474:7474" # admin port
+      - "7687:7687" # primary proxy
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_security_procedures_unrestricted=algo.*
+    volumes:
+      - ./docker/plugins:/var/lib/neo4j/plugins
+  jupyterscipy:
+    image: jupyter/scipy-notebook
+    ports:
+      - "8888:8888"
+    links:
+      - neo4j:neo4j
+    volumes:
+      - ./neo4j-jupyter:/home/jovyan/work

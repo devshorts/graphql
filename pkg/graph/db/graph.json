@@ -1,0 +1,118 @@
+{
+  "incidents": [
+    {
+      "name": "foo-bar",
+      "is_active": true,
+      "severity": "L3",
+      "users": ["userB", "userC"],
+      "caused_by": ["endpoint-health-srv", "endpoint", "s3"],
+      "resolution": "hup nginx"
+    },
+    {
+      "name": "silver-bod",
+      "is_active": false,
+      "severity": "L2",
+      "users": ["userA", "userC", "userB"],
+      "caused_by": ["infra2", "haproxy", "assets-srv"],
+      "resolution": "turn off the switch"
+    },
+    {
+      "name": "red",
+      "is_active": true,
+      "severity": "L2",
+      "users": ["userF", "userD", "userE", "userG"],
+      "caused_by": ["config", "infra2-xds"],
+      "resolution": "wait a little bit"
+    },
+    {
+      "name": "blue",
+      "is_active": true,
+      "severity": "L1",
+      "users": ["userA", "userD", "userE"],
+      "caused_by": ["infra3", "rando-srv", "endpoint", "rando"],
+      "resolution": "blame the manager"
+    },
+    {
+      "name": "green",
+      "is_active": true,
+      "severity": "L1",
+      "users": ["userA", "userD", "userE"],
+      "caused_by": ["srv", "kms", "openssl"],
+      "resolution": "try not to cry"
+    }
+  ],
+  "user_teams": [
+    {
+      "user": "userB",
+      "team": "devshorts"
+    },
+    {
+      "user": "userC",
+      "team": "devshorts"
+    },
+    {
+      "user": "userA",
+      "team": "infra"
+    },
+    {
+      "user": "userD",
+      "team": "team_name"
+    },
+    {
+      "user": "userE",
+      "team": "devshorts"
+    },
+    {
+      "user": "userF",
+      "team": "devshorts"
+    },
+    {
+      "user": "userG",
+      "team": "infra"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "infra2",
+      "depends_on": ["infra1"]
+    },
+    {
+      "name": "infra1",
+      "depends_on": ["nginx"]
+    },
+    {
+      "name": "endpoint",
+      "depends_on": ["infra2", "endpoint-health-srv", "rando"]
+    },
+    {
+      "name": "infra3",
+      "depends_on": ["kms", "s3", "infra2"]
+    },
+    {
+      "name": "srv",
+      "depends_on": ["kms", "openssl", "s3"]
+    },
+    {
+      "name": "rando",
+      "depends_on": ["rando-srv", "infra3", "infra2", "frontend"]
+    },
+    {
+      "name": "frontend",
+      "depends_on": ["infra2", "assets-srv", "bapi"]
+    },
+    {
+      "name": "bapi",
+      "depends_on": ["k8", "queue", "mining-service", "gateway"]
+    },
+    {
+      "name": "gateway",
+      "depends_on": ["infra2", "mix", "snapshots", "srv"]
+    }
+  ],
+  "service_teams": [
+    {
+      "service": "infra3",
+      "owns": "team_name"
+    }
+  ]
+}

@@ -1,0 +1,340 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Graph Query.",
+        "title": "SampleQL",
+        "contact": {
+            "name": "devshorts"
+        },
+        "license": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/incidents": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "incidents"
+                ],
+                "summary": "Creates an incident",
+                "parameters": [
+                    {
+                        "description": "Create Incident",
+                        "name": "incident",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.UpsertIncidentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.CreateIncidentResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/incidents/{id}/related": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "incidents"
+                ],
+                "summary": "Related Incidents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Incident Name",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.RelatedIncidentsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/incidents/{id}/shared/{shared_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "incidents"
+                ],
+                "summary": "Shared Infra Between Incidents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Incident Name",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Related Incident Name",
+                        "name": "shared_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.SharedInfraResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/infra/communities": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "infra"
+                ],
+                "summary": "Infra that is likley to be grouped together. These are related communities",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.InfraCommunitiesResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/infra/hotspots": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "infra"
+                ],
+                "summary": "Infra that has a high level of betweenness. I.e. Infra that is used everywhere",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.InfraHotSpotsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/links": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "links"
+                ],
+                "summary": "Creates links",
+                "parameters": [
+                    {
+                        "description": "Create Links",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.CreateLinksRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/model.CreateLinksResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "diagnostics"
+                ],
+                "summary": "Ping",
+                "responses": {
+                    "200": {}
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.CreateIncidentResponse": {
+            "type": "object"
+        },
+        "model.CreateLinksRequest": {
+            "type": "object",
+            "properties": {
+                "incidents": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.IncidentLink"
+                },
+                "infra": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.InfraLink"
+                }
+            }
+        },
+        "model.CreateLinksResponse": {
+            "type": "object"
+        },
+        "model.IncidentLink": {
+            "type": "object",
+            "properties": {
+                "acted_in": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "suhas"
+                    ]
+                },
+                "caused_by": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "envoy"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ir-foo"
+                }
+            }
+        },
+        "model.InfraCommunitiesResponse": {
+            "type": "object",
+            "properties": {
+                "communities": {
+                    "type": "array",
+                    "items": {
+                        "type": "\u0026{%!s(token.Pos=1217) \u003cnil\u003e %!s(*ast.SelectorExpr=\u0026{0xc0002ec360 0xc0002ec380})}"
+                    }
+                }
+            }
+        },
+        "model.InfraHotSpotsResponse": {
+            "type": "object",
+            "properties": {
+                "hotspots": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.InfraLink": {
+            "type": "object",
+            "properties": {
+                "depends_on": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "envoy"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "example": "term-health-srv"
+                }
+            }
+        },
+        "model.RelatedIncidentsResponse": {
+            "type": "object",
+            "properties": {
+                "incidents": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SharedInfraResponse": {
+            "type": "object",
+            "properties": {
+                "paths": {
+                    "type": "array",
+                    "items": {
+                        "type": "\u0026{%!s(token.Pos=1295) \u003cnil\u003e string}"
+                    }
+                }
+            }
+        },
+        "model.UpsertIncidentRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "ir-foo"
+                }
+            }
+        }
+    }
+}
